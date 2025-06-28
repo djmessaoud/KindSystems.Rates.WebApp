@@ -1,0 +1,19 @@
+﻿@inject ThemeService ThemeService
+
+
+<!-- от https://blazor.radzen.com/theme-service?theme=material3 -->
+
+<RadzenStack class="rz-p-0 rz-p-md-6 rz-p-lg-12">
+                <RadzenLabel Text="поменять стайл" />
+                <RadzenDropDown Name="ThemeDropDown" TValue="string" Value="@ThemeService.Theme" ValueChanged="@ChangeTheme" Data="@Themes.Free" TextProperty=@nameof(Theme.Text) ValueProperty=@nameof(Theme.Value) />
+    
+</RadzenStack>
+@code {
+    
+
+    void ChangeTheme(string value)
+    {
+        ThemeService.SetTheme(value);
+    }
+
+}

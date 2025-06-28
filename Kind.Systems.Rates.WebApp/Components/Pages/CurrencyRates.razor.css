@@ -1,0 +1,260 @@
+﻿/* Page Layout */
+.page-container {
+    background: var(--rz-base-background-color);
+    min-height: 100vh;
+    padding: 20px;
+    font-family: var(--rz-body-font-family);
+    color: var(--rz-text-color);
+}
+
+/* Header */
+.page-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.page-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--rz-text-color);
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+    .page-title .rz-icon {
+        color: var(--rz-primary);
+        font-size: 2.5rem;
+    }
+
+.page-subtitle {
+    font-size: 1.1rem;
+    color: var(--rz-text-secondary-color);
+    margin: 0;
+}
+
+/* Control Panel */
+.control-card {
+    max-width: 800px;
+    margin: 0 auto 30px auto;
+    padding: 20px;
+    background: var(--rz-surface-background-color);
+    border: 1px solid var(--rz-border-color);
+    border-radius: 12px;
+    box-shadow: var(--rz-shadow-3);
+}
+
+.dropdown-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 150px;
+}
+
+    .dropdown-group .rz-label {
+        font-weight: 600;
+        color: var(--rz-text-color);
+        font-size: 0.9rem;
+    }
+
+    .dropdown-group .rz-dropdown {
+        background: var(--rz-base-background-color);
+        border: 2px solid var(--rz-border-color);
+        border-radius: 8px;
+        color: var(--rz-text-color);
+    }
+
+        .dropdown-group .rz-dropdown:focus {
+            border-color: var(--rz-primary);
+            box-shadow: 0 0 0 3px var(--rz-primary-lighter);
+        }
+
+/* Buttons */
+.rz-button {
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 10px 20px;
+}
+
+    .rz-button:hover {
+        transform: translateY(-1px);
+    }
+
+    .rz-button.rz-button-sm {
+        padding: 6px 12px;
+    }
+
+/* Grid Card */
+.grid-card {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--rz-surface-background-color);
+    border: 1px solid var(--rz-border-color);
+    border-radius: 12px;
+    box-shadow: var(--rz-shadow-3);
+    overflow: hidden;
+}
+
+.grid-header {
+    background: var(--rz-base-100);
+    padding: 20px;
+    border-bottom: 1px solid var(--rz-border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .grid-header h3 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--rz-text-color);
+    }
+
+/* Data Grid */
+.rz-datatable {
+    background: var(--rz-surface-background-color);
+    color: var(--rz-text-color);
+}
+
+.rz-datatable-header th {
+    background: var(--rz-base-100);
+    color: var(--rz-text-color);
+    font-weight: 600;
+    padding: 15px;
+    border-bottom: 2px solid var(--rz-border-color);
+}
+
+.rz-datatable-data td {
+    padding: 15px;
+    border-bottom: 1px solid var(--rz-border-color);
+    background: var(--rz-surface-background-color);
+    color: var(--rz-text-color);
+}
+
+.rz-datatable-data tr:hover td {
+    background: var(--rz-base-100);
+}
+
+/* Rate Display */
+.rate-display {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.rate-number {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--rz-text-color);
+}
+
+.rate-currency {
+    font-size: 0.8rem;
+    color: var(--rz-text-secondary-color);
+    font-weight: 500;
+}
+
+/* Time Display */
+.time-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--rz-text-secondary-color);
+}
+
+    .time-display .rz-icon {
+        font-size: 1rem;
+    }
+
+/* Highlighted Row */
+.base-currency-row {
+    background: var(--rz-primary-lighter) !important;
+    border-left: 4px solid var(--rz-primary) !important;
+}
+
+    .base-currency-row .rate-number {
+        color: var(--rz-primary) !important;
+        font-weight: 800 !important;
+    }
+
+/* Pagination */
+.rz-paginator {
+    background: var(--rz-base-100);
+    border-top: 1px solid var(--rz-border-color);
+    padding: 15px;
+}
+
+.rz-paginator-page {
+    background: var(--rz-surface-background-color);
+    color: var(--rz-text-color);
+    border: 1px solid var(--rz-border-color);
+    border-radius: 6px;
+    margin: 0 2px;
+}
+
+    .rz-paginator-page:hover {
+        background: var(--rz-base-100);
+    }
+
+    .rz-paginator-page.rz-state-active {
+        background: var(--rz-primary) !important;
+        color: var(--rz-primary-contrast) !important;
+        border-color: var(--rz-primary) !important;
+    }
+
+/* Dialog */
+.rate-details {
+    padding: 20px;
+}
+
+    .rate-details p {
+        margin: 0 0 15px 0;
+        padding: 10px;
+        background: var(--rz-base-100);
+        border-radius: 6px;
+        border-left: 3px solid var(--rz-primary);
+    }
+
+        .rate-details p:last-child {
+            margin-bottom: 0;
+        }
+
+    .rate-details strong {
+        color: var(--rz-text-color);
+    }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .page-container {
+        padding: 10px;
+    }
+
+    .page-title {
+        font-size: 2rem;
+    }
+
+    .control-card .rz-stack {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .grid-header {
+        padding: 15px;
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    .rz-datatable-data td,
+    .rz-datatable-header th {
+        padding: 10px 8px;
+    }
+}
+
+/* Smooth Transitions */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}

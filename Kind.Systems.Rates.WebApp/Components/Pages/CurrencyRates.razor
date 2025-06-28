@@ -1,0 +1,200 @@
+﻿@page "/"
+@using System.Linq
+@using ClosedXML.Excel
+@using Kind.Systems.Rates.WebApp.Application.Queries
+@using Kind.Systems.Rates.WebApp.Application.DTOs
+@using Kind.Systems.Rates.WebApp.Components.Shared
+@using MediatR
+@using Radzen
+@using Radzen.Blazor
+@rendermode InteractiveServer
+
+<div class="page-container">
+
+    <div class="page-header">
+        <h1 class="page-title">
+            <RadzenIcon Icon="trending_up" />
+            Монитор курсов валют
+        </h1>
+        <p class="page-subtitle">Отслеживайте актуальные курсы валют в режиме реального времени</p>
+    </div>
+
+    <!-- панел кнопок и  -->
+    <RadzenCard class="control-card">
+        <RadzenStack Orientation="Orientation.Horizontal"
+                     Gap="16"
+                     AlignItems="AlignItems.Center"
+                     JustifyContent="JustifyContent.SpaceBetween"
+                     Wrap="FlexWrap.Wrap">
+
+            <RadzenStack Orientation="Orientation.Horizontal" Gap="12" AlignItems="AlignItems.Center">
+                <div class="dropdown-group">
+                    <RadzenLabel Text="Базовая валюта:" />
+                    <RadzenDropDown TValue="string"
+                                    Data="@_bases"
+                                    @bind-Value="_base"
+                                    Change="@LoadRates" />
+                </div>
+
+                <RadzenButton Icon="refresh"
+                              Text="Обновить"
+                              ButtonStyle="ButtonStyle.Primary"
+                              Click="@LoadRates" />
+
+                <RadzenButton Icon="file_download"
+                              Text="Экспорт"
+                              ButtonStyle="ButtonStyle.Secondary"
+                              Click="@ExportData" />
+            </RadzenStack>
+
+            <ThemeSwitcher />
+        </RadzenStack>
+    </RadzenCard>
+
+    <!-- Grid для данные -->
+    <RadzenCard class="grid-card">
+        <div class="grid-header">
+            <h3>Курсы валют</h3>
+            <RadzenBadge Text="@($"{_rates.Count} валют")" BadgeStyle="BadgeStyle.Primary" />
+        </div>
+
+        <RadzenDataGrid @ref="_grid"
+                        Data="@_rates"
+                        TItem="ExchangeRateDto"
+                        AllowFiltering="true"
+                        AllowSorting="true"
+                        AllowPaging="true"
+                        PageSize="15"
+                        EmptyText="Нет данных. Нажмите «Обновить»"
+                        RowRender="@HighlightBaseRow">
+
+            <Columns>
+                <RadzenDataGridColumn Property="Quote" Title="Валюта" Width="140px">
+                    <Template Context="rate">
+                        <RadzenBadge Text="@rate.Quote" BadgeStyle="BadgeStyle.Info" />
+                    </Template>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn Property="Rate" Title="Курс" Width="180px" FormatString="{0:N4}">
+                    <Template Context="rate">
+                        <div class="rate-display">
+                            <span class="rate-number">@rate.Rate.ToString("N4")</span>
+                            <span class="rate-currency">= 1 @_base</span>
+                        </div>
+                    </Template>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn Property="RetrievedAt" Title="Обновлено" Width="160px">
+                    <Template Context="rate">
+                        <div class="time-display">
+                            <RadzenIcon Icon="schedule" />
+                            <span>@rate.RetrievedAt.ToString("HH:mm")</span>
+                        </div>
+                    </Template>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn Title="Действия" Width="100px" Sortable="false" Filterable="false">
+                    <Template Context="rate">
+                        <RadzenButton Icon="visibility"
+                                      Size="ButtonSize.Small"
+                                      ButtonStyle="ButtonStyle.Light"
+                                      Click="@(() => ShowRateDetails(rate))" />
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    </RadzenCard>
+</div>
+
+@code {
+    // список базовых валют и другие переменные (не все работают на этот API)
+    private readonly string[] _bases = ["USD", "EUR", "GBP", "JPY", "CHF", "AUD", "CAD", "NZD", "SEK", "NOK", "DZD"];
+    private string _base = "USD";
+    private List<ExchangeRateDto> _rates = new();
+    private RadzenDataGrid<ExchangeRateDto>? _grid;
+
+    // сервисы
+    [Inject] private IMediator Mediator { get; set; } = default!;
+    [Inject] private IJSRuntime JS { get; set; } = default!;
+    [Inject] private NavigationManager Nav { get; set; } = default!;
+    [Inject] private NotificationService Notify { get; set; } = default!;
+    [Inject] private DialogService Dialog { get; set; } = default!;
+
+    private IJSObjectReference? _exportModule;
+
+    //Load initial data (старт)
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadRates();
+    }
+
+    
+    private async Task LoadRates()
+    {
+        try
+        {
+            var result = await Mediator.Send(new GetLatestRatesQuery(_base));
+
+            if (result.IsSuccess)
+            {
+                _rates = result.Value.ToList();
+            }
+            else
+            {
+                var errorMessage = result.Errors.FirstOrDefault() ?? "Неизвестная ошибка";
+                Notify.Notify(NotificationSeverity.Error, "Ошибка загрузки", errorMessage);
+            }
+        }
+        catch (Exception ex)
+        {
+            Notify.Notify(NotificationSeverity.Error, "Ошибка", ex.Message);
+        }
+
+        StateHasChanged();
+    }
+
+    // сохраняем данные в файл Excel
+    private async Task ExportData()
+    {
+        try
+        {
+            var apiUrl = $"/api/export/{_base}";
+            var fileName = $"rates_{_base}_{DateTime.UtcNow:yyyyMMddHHmmss}.xlsx";
+
+            Notify.Notify(NotificationSeverity.Info, "Экспорт", "Подготовка файла...");
+
+            _exportModule ??= await JS.InvokeAsync<IJSObjectReference>("import", $"{Nav.BaseUri}js/export.js");
+            await _exportModule.InvokeVoidAsync("fetchAndSave", apiUrl, fileName);
+
+            Notify.Notify(NotificationSeverity.Success, "Готово", "Файл сохранён");
+        }
+        catch (Exception ex)
+        {
+            Notify.Notify(NotificationSeverity.Error, "Ошибка экспорта", ex.Message);
+        }
+    }
+
+    private void ShowRateDetails(ExchangeRateDto rate)
+    {
+        var content = $@"
+            <div class='rate-details'>
+                <p><strong>Базовая валюта:</strong> {_base}</p>
+                <p><strong>Целевая валюта:</strong> {rate.Quote}</p>
+                <p><strong>Курс:</strong> {rate.Rate:N4}</p>
+                <p><strong>Время обновления:</strong> {rate.RetrievedAt:g}</p>
+            </div>";
+
+        Dialog.Open($"Детали курса {rate.Quote}", _ => builder =>
+        {
+            builder.AddMarkupContent(0, content);
+        }, new DialogOptions { Width = "400px" });
+    }
+
+    private void HighlightBaseRow(RowRenderEventArgs<ExchangeRateDto> args)
+    {
+        if (args.Data.Quote == _base)
+        {
+            args.Attributes["class"] = "base-currency-row";
+        }
+    }
+}
