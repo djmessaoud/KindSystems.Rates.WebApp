@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Kind.Systems.Rates.WebApp.Infrastructure.Kind.Systems.Rates.WebApp.Infrastructure.Persistence.Migrations
+namespace Kind.Systems.Rates.WebApp.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreation : Migration

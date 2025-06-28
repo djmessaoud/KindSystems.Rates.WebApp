@@ -18,6 +18,12 @@ namespace Kind.Systems.Rates.WebApp
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            #region UserSecrets
+            if (builder.Environment.IsDevelopment())
+            {
+                builder.Configuration.AddUserSecrets<Program>();
+            }
+            #endregion
             #region Services
             #region UI
             builder.Services.AddRazorComponents()

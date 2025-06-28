@@ -10,13 +10,9 @@ using System.Threading.Tasks;
 
 namespace Kind.Systems.Rates.WebApp.Application.Queries
 {
-    public class GetLatestRatesQueryHandler(
-        IExchangeRateRepository repo) :
-        IRequestHandler<GetLatestRatesQuery,
-            Result<IReadOnlyList<ExchangeRateDto>>>
+    public class GetLatestRatesQueryHandler(IExchangeRateRepository repo) : IRequestHandler<GetLatestRatesQuery, Result<IReadOnlyList<ExchangeRateDto>>>
     {
-        public async Task<Result<IReadOnlyList<ExchangeRateDto>>> Handle(
-            GetLatestRatesQuery q, CancellationToken ct)
+        public async Task<Result<IReadOnlyList<ExchangeRateDto>>> Handle(GetLatestRatesQuery q, CancellationToken ct)
         {
             var data = await repo.GetLatestAsync(q.Base, ct);
 

@@ -11,10 +11,7 @@ using System.Threading.Tasks;
 namespace Kind.Systems.Rates.WebApp.Application.Commands
 {
     // команда для обновления курсов валют
-    public class RefreshRatesCommandHandler(
-        IExchangeRateProvider provider,
-        IExchangeRateRepository repo) :
-        IRequestHandler<RefreshRatesCommand>
+    public class RefreshRatesCommandHandler(IExchangeRateProvider provider, IExchangeRateRepository repo) : IRequestHandler<RefreshRatesCommand>
     {
         public async Task Handle(RefreshRatesCommand cmd, CancellationToken ct)
         {

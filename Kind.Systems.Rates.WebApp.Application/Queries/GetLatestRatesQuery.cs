@@ -9,6 +9,5 @@ using Ardalis.Result;
 using MediatR;
 namespace Kind.Systems.Rates.WebApp.Application.Queries
 {
-    public record GetLatestRatesQuery(string Base)
-        : IRequest<Result<IReadOnlyList<ExchangeRateDto>>>;
+    public record GetLatestRatesQuery(string Base) : IRequest<Result<IReadOnlyList<ExchangeRateDto>>>;
 }

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Kind.Systems.Rates.WebApp.Infrastructure.Kind.Systems.Rates.WebApp.Infrastructure.Persistence.Migrations
+namespace Kind.Systems.Rates.WebApp.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
